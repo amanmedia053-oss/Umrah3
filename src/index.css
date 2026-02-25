@@ -1,0 +1,69 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
+
+@theme {
+  --font-pashto: "Noto Naskh Arabic", serif;
+  
+  /* Theme Colors */
+  --color-islamic-orange: #F27D26;
+  --color-islamic-green: #2E7D32;
+  --color-islamic-blue: #0288D1;
+  --color-islamic-purple: #7B1FA2;
+  --color-islamic-red: #C62828;
+  --color-islamic-gold: #D4AF37;
+  --color-islamic-gray: #616161;
+  --color-islamic-teal: #00897B;
+  --color-islamic-dark-green: #1B5E20;
+  --color-islamic-navy: #1A237E;
+
+  --animate-spin-slow: spin 10s linear infinite;
+}
+
+@layer base {
+  body {
+    @apply font-pashto antialiased transition-colors duration-300;
+    direction: rtl;
+  }
+}
+
+.islamic-pattern {
+  background-image: url("https://www.transparenttextures.com/patterns/arabesque.png");
+}
+
+.safe-area-top {
+  padding-top: calc(30px + env(safe-area-inset-top));
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.1);
+  border-radius: 10px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+}
+
+@font-face {
+  font-family: 'WazirMatn';
+  src: url('/WazirMatn-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'WazirMatn';
+  src: url('/WazirMatn-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* ټول اپ ته فونټ ورکړه */
+html, body, #root {
+  font-family: 'WazirMatn', sans-serif;
+}
