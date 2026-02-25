@@ -1,0 +1,5 @@
+{
+  "name": "د عمرې آډيو لارښود",
+  "description": "د عمرې اړوند مهم او ضروري آډيو درسونه په پښتو ژبه",
+  "requestFramePermissions": ["microphone"]
+}
