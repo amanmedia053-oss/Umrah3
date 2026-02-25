@@ -11,14 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # (نوې برخه) د Node.js تنظیمول ترڅو د 403 ارور مخنیوی وشي
+      # ✅ Node.js تنظیم (cache لرې شو ځکه lock file نشته)
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # د ۲۰مې نسخې کارول چې ثابته ده
-          cache: 'npm'
+          node-version: '20'
 
-      # ۱. جاوا ۲۱ (د Gradle د ستونزو لپاره)
+      # ۱. جاوا ۲۱
       - name: set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -27,12 +26,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # د کش پاکول ترڅو د پخوانیو ډاونلوډونو ستونزه هواره شي
           npm cache clean --force
-          
           npm install
-          
-          # د Capacitor اړین کتابتونونه انسټالول
           npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets @capacitor/share @capacitor/filesystem
 
       - name: Build Web App
@@ -40,38 +35,27 @@ jobs:
 
       - name: Sync with Capacitor
         run: |
-          # د عمرې لارښود نوم او خپل Package ID مو ورکړ
           npx cap init "د عمرې لارښود" "com.amanmedia.umrah" --web-dir dist
           npx cap add android
           npx cap sync android
 
-      # ۲. د آیکن برخه (اصلاح شوې)
       - name: Generate Icon
         run: |
           if [ -f "logo.png" ]; then
             mkdir -p assets
-            # دلته مو logo.png په icon.png بدل کړ ترڅو capacitor-assets یې وپیژني
             cp logo.png assets/icon.png
             npx capacitor-assets generate --android
           else
             echo "Warning: logo.png not found, skipping icon generation."
           fi
 
-      # ۳. د انټرنیټ او سټوریج اجازې (Permissions)
       - name: Inject Permissions and Fix Name
         run: |
           cd android/app/src/main
-          
-          # په AndroidManifest.xml کې د انټرنیټ او سټوریج اجازې ورزیاتوو
           sed -i 's/<application/<uses-permission android:name="android.permission.INTERNET" \/>\n    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"\/>\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" \/>\n    <application/g' AndroidManifest.xml
-          
-          # د ډاونلوډ لپاره "ClearText" او "Legacy Storage" فعاله کوو
           sed -i 's/<application/<application android:usesCleartextTraffic="true" android:requestLegacyExternalStorage="true"/g' AndroidManifest.xml
-          
-          # د ډاډ لپاره د فایل چاپول
           cat AndroidManifest.xml
 
-      # ۴. د Kotlin د تکراري فایلونو ستونزه (Fix)
       - name: Fix Kotlin Dependency Conflict
         run: |
           cd android
