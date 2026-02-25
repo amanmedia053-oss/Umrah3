@@ -466,3 +466,55 @@ export default function App() {
     </div>
   );
 }
+// --- Main App ---
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('home');
+  const { isDarkMode } = useTheme();
+  const { isPlayerOpen, setIsPlayerOpen } = useAudio();
+
+  useEffect(() => {
+    const handleBackButton = () => {
+      // 1️⃣ که PlayerOverlay خلاص وي → اول هغه بند شي
+      if (isPlayerOpen) {
+        setIsPlayerOpen(false);
+        window.history.pushState(null, '');
+        return;
+      }
+
+      // 2️⃣ که په کورپاڼه کې نه وي → کورپاڼې ته لاړ شي
+      if (activeTab !== 'home') {
+        setActiveTab('home');
+        window.history.pushState(null, '');
+        return;
+      }
+
+      // 3️⃣ که په کورپاڼه کې وي → اپ څخه وځي (نور history نه بندوو)
+    };
+
+    // history ته يو state اضافه کوو چې back کار وکړي
+    window.history.pushState(null, '');
+
+    window.addEventListener('popstate', handleBackButton);
+
+    return () => {
+      window.removeEventListener('popstate', handleBackButton);
+    };
+  }, [activeTab, isPlayerOpen, setIsPlayerOpen]);
+
+  return (
+    <div className={`min-h-screen transition-colors ${isDarkMode ? 'bg-black' : 'bg-gray-50'}`}>
+      <div className="max-w-md mx-auto min-h-screen relative">
+        <main className="safe-area-top">
+          {activeTab === 'home' && <HomeScreen />}
+          {activeTab === 'favs' && <FavoritesScreen />}
+          {activeTab === 'settings' && <SettingsScreen />}
+          {activeTab === 'about' && <AboutScreen />}
+        </main>
+
+        <PlayerOverlay />
+        <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
+      </div>
+    </div>
+  );
+}
